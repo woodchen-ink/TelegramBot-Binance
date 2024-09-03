@@ -6,31 +6,42 @@ import time
 from datetime import datetime, timedelta
 import pytz
 
-# 设置时区
 singapore_tz = pytz.timezone('Asia/Singapore')
-
-# 交易所设置
 exchange = ccxt.binance()
-
-# Telegram Bot 设置
 BOT_TOKEN = os.environ['BOT_TOKEN']
 CHAT_ID = os.environ['CHAT_ID']
 bot = telebot.TeleBot(BOT_TOKEN)
-
-# 获取币种列表
 SYMBOLS = os.environ['SYMBOLS'].split(',')
 
-def get_price(symbol):
+def get_ticker_info(symbol):
     ticker = exchange.fetch_ticker(symbol)
-    return ticker['last']
+    return {
+        'symbol': symbol,
+        'last': ticker['last'],
+        'change_percent': ticker['percentage'],
+        'high': ticker['high'],
+        'low': ticker['low'],
+        'volume': ticker['baseVolume'],
+        'quote_volume': ticker['quoteVolume'],
+        'bid': ticker['bid'],
+        'ask': ticker['ask']
+    }
 
 def send_price_update():
     now = datetime.now(singapore_tz)
-    message = f"当前时间: {now.strftime('%Y-%m-%d %H:%M:%S')} (SGT)\n价格:\n"
+    message = f"市场更新 - {now.strftime('%Y-%m-%d %H:%M:%S')} (SGT)\n\n"
+    
     for symbol in SYMBOLS:
-        price = get_price(symbol)
-        message += f"{symbol}: ${price:.4f}\n"
-    bot.send_message(CHAT_ID, message)
+        info = get_ticker_info(symbol)
+        message += f"*{info['symbol']}*\n"
+        message += f"价格: ${info['last']:.4f}\n"
+        message += f"24h 涨跌: {info['change_percent']:.2f}%\n"
+        message += f"24h 高/低: ${info['high']:.4f} / ${info['low']:.4f}\n"
+        message += f"24h 成交量: {info['volume']:.2f}\n"
+        message += f"24h 成交额: ${info['quote_volume']:.2f}\n"
+        message += f"买一/卖一: ${info['bid']:.4f} / ${info['ask']:.4f}\n\n"
+    
+    bot.send_message(CHAT_ID, message, parse_mode='Markdown')
 
 # 立即执行一次价格更新
 print("Sending initial price update...")
