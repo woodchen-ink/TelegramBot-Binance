@@ -4,6 +4,10 @@
 
 一个简单的 Telegram 机器人,用于每小时发送来自币安的加密货币价格更新。
 
+## 示例
+
+![image](https://github.com/user-attachments/assets/b5651dd9-495f-4a65-a248-610956c4a6c1)
+
 ## 描述
 
 这个机器人从币安获取指定加密货币对的最新价格,并每小时向指定的 Telegram 聊天发送更新。它被设计为在 Docker 容器中运行,便于部署和管理。
