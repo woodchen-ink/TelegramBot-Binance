@@ -1,0 +1,8 @@
+services:
+  price_bot:
+    build: .
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - CHAT_ID=${CHAT_ID}
+      - SYMBOLS=${SYMBOLS}
+      - TZ=Asia/Singapore
