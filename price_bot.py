@@ -26,20 +26,28 @@ def get_ticker_info(symbol):
         'bid': ticker['bid'],
         'ask': ticker['ask']
     }
-
+def format_change(change_percent):
+    if change_percent > 0:
+        return f"🔼 +{change_percent:.2f}%"
+    elif change_percent < 0:
+        return f"🔽 {change_percent:.2f}%"
+    else:
+        return f"◀▶ {change_percent:.2f}%"
 def send_price_update():
     now = datetime.now(singapore_tz)
     message = f"市场更新 - {now.strftime('%Y-%m-%d %H:%M:%S')} (SGT)\n\n"
     
     for symbol in SYMBOLS:
         info = get_ticker_info(symbol)
+        change_str = format_change(info['change_percent'])
+        
         message += f"*{info['symbol']}*\n"
-        message += f"价格: ${info['last']:.4f}\n"
-        message += f"24h 涨跌: {info['change_percent']:.2f}%\n"
-        message += f"24h 高/低: ${info['high']:.4f} / ${info['low']:.4f}\n"
+        message += f"价格: ${info['last']:.7f}\n"
+        message += f"24h 涨跌: {change_str}\n"
+        message += f"24h 高/低: ${info['high']:.7f} / ${info['low']:.7f}\n"
         message += f"24h 成交量: {info['volume']:.2f}\n"
         message += f"24h 成交额: ${info['quote_volume']:.2f}\n"
-        message += f"买一/卖一: ${info['bid']:.4f} / ${info['ask']:.4f}\n\n"
+        message += f"买一/卖一: ${info['bid']:.7f} / ${info['ask']:.7f}\n\n"
     
     bot.send_message(CHAT_ID, message, parse_mode='Markdown')
 
