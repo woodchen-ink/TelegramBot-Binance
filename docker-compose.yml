@@ -1,8 +1,10 @@
 services:
-  price_bot:
-    build: .
+  telegrambot-binance:
+    container_name: telegrambot-binance
+    image: woodchen/telegrambot-binance:latest
+    restart: always
     environment:
-      - BOT_TOKEN=${BOT_TOKEN}
-      - CHAT_ID=${CHAT_ID}
-      - SYMBOLS=${SYMBOLS}
+      - BOT_TOKEN=719XXX42:AAEydXXXX8rg #换成自己的机器人ID
+      - CHAT_ID=-100xxx781  #换成自己的群ID
+      - SYMBOLS=DOGS/USDT,BTC/USDT,ETH/USDT,TON/USDT
       - TZ=Asia/Singapore
